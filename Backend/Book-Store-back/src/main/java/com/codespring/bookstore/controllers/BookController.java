@@ -77,13 +77,5 @@ public class BookController {
 
 
 
-// جوه الـ BookController:
 
-//    @PostMapping("/{id}/image")
-//    public ResponseEntity<BookDto> uploadImage(
-//            @PathVariable Integer id,
-//            @RequestParam("file") MultipartFile file) {
-//
-//        return ResponseEntity.ok(bookService.uploadBookImage(id, file));
-//    }
 }
