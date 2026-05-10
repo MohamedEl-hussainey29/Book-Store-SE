@@ -32,7 +32,6 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // ── Public endpoints (نسيبهم هنا أفضل وأنضف) ──
                         .requestMatchers(
                                 "/users/register",
                                 "/users/login",
@@ -44,11 +43,8 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/books/**", "/categories/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/users/stats/logins/**").hasRole("ADMIN")
 
-                        // ── All other requests: must be authenticated ──
-                        // أي مسار غير اللي فوق لازم يكون معاه توكن
-                        // أما تحديد (أدمن ولا يوزر) فهيكون من جوه الكنترولر نفسه
+
                         .anyRequest().authenticated()
                 )
 

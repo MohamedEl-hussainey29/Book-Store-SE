@@ -21,30 +21,25 @@ public class LoginTrackingAspect {
 
     private final LoginStatRepository loginStatRepository;
 
-    // Runs every time login() succeeds
     @AfterReturning("execution(* com.codespring.bookstore.services.UserService.login(..))")
     public void trackLogin() {
         LocalDate today = LocalDate.now();
 
-        // Find today's record or create a new one
         LoginStat stat = loginStatRepository.findByDate(today)
                 .orElse(new LoginStat(null, today, 0));
 
-        // Increment and save
         stat.setCount(stat.getCount() + 1);
         loginStatRepository.save(stat);
 
         log.info("📊 [LOGIN TRACKER] Logins on {}: {}", today, stat.getCount());
     }
 
-    // Returns count for a specific day
     public int getLoginCountForDay(LocalDate date) {
         return loginStatRepository.findByDate(date)
                 .map(LoginStat::getCount)
                 .orElse(0);
     }
 
-    // Returns all days with their login counts (sorted by date)
     public Map<String, Integer> getAllDaysLoginCount() {
         List<LoginStat> all = loginStatRepository.findAll();
         Map<String, Integer> result = new LinkedHashMap<>();

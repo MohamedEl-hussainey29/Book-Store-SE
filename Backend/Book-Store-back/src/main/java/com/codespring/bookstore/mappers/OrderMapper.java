@@ -14,11 +14,9 @@ import org.mapstruct.Mapping;
 )
 public interface OrderMapper {
 
-    // Order entity → OrderDto
     @Mapping(target = "user", source = "user")
     OrderDto toDto(Order order);
 
-    // OrderDto → Order entity
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "orderItems", ignore = true)

@@ -14,14 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
 
     @Autowired
-    private EmailService emailService; // السيرفيس اللي بتبعت الإيميل فعلاً
+    private EmailService emailService;
 
     @PostMapping("/send")
     public ResponseEntity<String> sendNotification(@RequestBody NotificationRequest request) {
-        // 1. بتبعت الإيميل لليوزر
         emailService.sendSimpleMessage(request.getToEmail(), request.getSubject(), request.getBody());
 
-        // 2. بتحفظ في الداتا بيز (notification_db) إن الإيميل اتبعت بنجاح
         emailService.saveLog(request);
 
         return ResponseEntity.ok("Notification sent and logged successfully!");

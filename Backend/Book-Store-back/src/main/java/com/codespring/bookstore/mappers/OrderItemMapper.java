@@ -7,11 +7,9 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {BookMapper.class})
 public interface OrderItemMapper {
 
-    // OrderItem entity → OrderItemDto
     @Mapping(target = "book", source = "book")
     OrderItemDto toDto(OrderItem orderItem);
 
-    // OrderItemDto → OrderItem entity
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "order", ignore = true)
     @Mapping(target = "book", ignore = true)

@@ -17,14 +17,12 @@ public class FavouriteController {
 
     private final FavouriteService favouriteService;
 
-    // GET /api/favourites/user/1
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<FavouriteDto>> getFavouritesByUser(@PathVariable Integer userId) {
         return ResponseEntity.ok(favouriteService.getFavouritesByUser(userId));
     }
 
-    // POST /api/favourites/1/books/2
     @PostMapping("/{userId}/books/{bookId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<FavouriteDto> addFavourite(
@@ -34,7 +32,6 @@ public class FavouriteController {
                 .body(favouriteService.addFavourite(userId, bookId));
     }
 
-    // DELETE /api/favourites/1/books/2
     @DeleteMapping("/{userId}/books/{bookId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> removeFavourite(

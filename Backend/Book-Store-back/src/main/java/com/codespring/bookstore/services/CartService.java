@@ -30,7 +30,6 @@ public class CartService {
     private final UserRepository userRepository;
     private final CartMapper cartMapper;
 
-    // Get cart by user id
     @Transactional
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public CartDto getCartByUserId(Integer userId) {
@@ -39,13 +38,11 @@ public class CartService {
         return cartMapper.toDto(cart);
     }
 
-    // Add item to cart
 
     @Transactional
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public CartDto addItemToCart(Integer userId, AddToCartRequest request) {
 
-        // Get or create cart
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     User user = userRepository.findById(userId)
@@ -55,11 +52,9 @@ public class CartService {
                     return cartRepository.save(newCart);
                 });
 
-        // Check if book exists
         Book book = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new RuntimeException("Book not found: " + request.getBookId()));
 
-        // Check if book is available
         if (book.getQuantity() == 0) {
             throw new RuntimeException("Book is out of stock");
         }
@@ -68,12 +63,10 @@ public class CartService {
             throw new RuntimeException("Not enough stock. Available: " + book.getQuantity());
         }
 
-        // Check if book already in cart
         if (cartItemRepository.existsByCartIdAndBookId(cart.getId(), book.getId())) {
             throw new RuntimeException("Book already in cart");
         }
 
-        // Add item to cart
         BigDecimal subtotal = BigDecimal.ZERO;
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
@@ -90,7 +83,6 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("Cart not found after save")));
     }
 
-    // Remove item from cart
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public void removeItemFromCart(Integer userId, Integer bookId) {
         Cart cart = cartRepository.findByUserId(userId)
@@ -100,7 +92,6 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
-    // Clear cart
     @Transactional
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public void clearCart(Integer userId) {
@@ -111,37 +102,29 @@ public class CartService {
 
 
 
-// ... جوه كلاس CartService
 
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     @Transactional
     public CartDto updateItemQuantity(Integer userId, Integer bookId, Integer newQuantity) {
 
-        // 1. نجيب السلة بتاعة اليوزر
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
 
-        // 2. نجيب الـ Item نفسه من السلة
         CartItem cartItem = cartItemRepository.findByCartIdAndBookId(cart.getId(), bookId)
                 .orElseThrow(() -> new RuntimeException("Item not found in cart"));
 
-        // 3. نتأكد إن الكمية الجديدة متاحة في المخزن (Book)
         Book book = cartItem.getBook();
         if (newQuantity > book.getQuantity()) {
             throw new RuntimeException("Not enough stock. Only " + book.getQuantity() + " available.");
         }
 
-        // 4. نحدث الكمية
         cartItem.setQuantity(newQuantity);
 
-        // 5. ⚠️ خطوة مهمة جداً: نحسب الـ Subtotal الجديد
         BigDecimal newSubtotal = book.getPrice().multiply(BigDecimal.valueOf(newQuantity));
         cartItem.setSubtotal(newSubtotal);
 
-        // 6. نسيف التعديل في الداتا بيز
         cartItemRepository.save(cartItem);
 
-        // 7. نرجع السلة كلها متحدثة
         return cartMapper.toDto(cartRepository.findById(cart.getId())
                 .orElseThrow(() -> new RuntimeException("Cart not found after update")));
     }

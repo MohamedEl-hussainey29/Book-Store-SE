@@ -20,13 +20,11 @@ public class BookController {
 
     private final BookService bookService;
 
-    // GET /api/books
     @GetMapping
     public ResponseEntity<List<BookDto>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
-    // GET /api/books/1
     @GetMapping("/{id}")
     public ResponseEntity<BookDto> getBookById(@PathVariable Integer id) {
         return ResponseEntity.ok(bookService.getBookById(id));
@@ -34,20 +32,17 @@ public class BookController {
 
 
 
-    // GET /api/books/search?title=java
     @GetMapping("/search")
     public ResponseEntity<List<BookDto>> searchBooks(@RequestParam String title) {
         return ResponseEntity.ok(bookService.searchBooks(title));
     }
-    // GET /books/category/Programming
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<List<BookDto>> getBooksByCategory(@PathVariable String categoryName) {
         return ResponseEntity.ok(bookService.getBooksByCategory(categoryName));
     }
 
-    // POST /api/books
 
-    @PreAuthorize("hasRole('ADMIN')") // أو الحماية اللي إنت حاططها
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BookDto> createBook(
             @ModelAttribute BookDto bookDto,
@@ -57,7 +52,6 @@ public class BookController {
         return ResponseEntity.ok(savedBook);
     }
 
-    // PUT /api/books/1
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BookDto> updateBook(
             @PathVariable Integer id,
@@ -67,7 +61,6 @@ public class BookController {
         return ResponseEntity.ok(bookService.updateBook(id, dto, file));
     }
 
-    // DELETE /api/books/1
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {

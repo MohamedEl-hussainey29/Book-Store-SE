@@ -18,23 +18,20 @@ public class CartController {
 
     private final CartService cartService;
 
-    // GET /cart/1
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CartDto> getCart(@PathVariable Integer userId) {
         return ResponseEntity.ok(cartService.getCartByUserId(userId));
     }
 
-    // POST /api/cart/1/items
     @PostMapping("/{userId}/items")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CartDto> addItemToCart(
             @PathVariable Integer userId,
-            @RequestBody @Valid AddToCartRequest request) {   // changed
+            @RequestBody @Valid AddToCartRequest request) {
         return ResponseEntity.ok(cartService.addItemToCart(userId, request));
     }
 
-    // DELETE /api/cart/1/items/2
     @DeleteMapping("/{userId}/items/{bookId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> removeItemFromCart(
@@ -44,7 +41,6 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    // DELETE /api/cart/1/clear
     @DeleteMapping("/{userId}/clear")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> clearCart(@PathVariable Integer userId) {
@@ -54,15 +50,13 @@ public class CartController {
 
 
 
-    // شكل اللينك هيكون مثلا: /cart/1/items/5
     @PutMapping("/{userId}/items/{bookId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CartDto> updateItemQuantity(
             @PathVariable Integer userId,
             @PathVariable Integer bookId,
-            @RequestBody @Valid UpdateCartItemRequest request) { // بناخد الكمية الجديدة من اللينك
+            @RequestBody @Valid UpdateCartItemRequest request) {
 
-        // لو الكمية بصفر أو أقل، ممكن نرمي إيرور أو نعتبرها عملية حذف
         if (request.getQuantity() <= 0) {
             throw new RuntimeException("Quantity must be at least 1");
         }

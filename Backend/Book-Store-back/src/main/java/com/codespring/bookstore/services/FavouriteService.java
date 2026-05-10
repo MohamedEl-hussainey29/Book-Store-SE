@@ -25,7 +25,6 @@ public class FavouriteService {
     private final BookRepository bookRepository;
     private final FavouriteMapper favouriteMapper;
 
-    // Get all favourites by user
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public List<FavouriteDto> getFavouritesByUser(Integer userId) {
         return favouriteRepository.findByUserId(userId)
@@ -34,10 +33,8 @@ public class FavouriteService {
                 .toList();
     }
 
-    // Add to favourites
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public FavouriteDto addFavourite(Integer userId, Integer bookId) {
-        // Check if already in favourites
         if (favouriteRepository.existsByUserIdAndBookId(userId, bookId)) {
             throw new RuntimeException("Book already in favourites");
         }
@@ -56,7 +53,6 @@ public class FavouriteService {
         return favouriteMapper.toDto(favouriteRepository.save(favourite));
     }
 
-    // Remove from favourites
     @Transactional
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public void removeFavourite(Integer userId, Integer bookId) {

@@ -9,13 +9,10 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
-    // Find books by category
     List<Book> findByCategoryId(Integer categoryId);
 
-    // Find books by author
     List<Book> findByAuthor(String author);
 
-    // Find books by status (available, out of stock)
     List<Book> findByStatus(String status);
 
 

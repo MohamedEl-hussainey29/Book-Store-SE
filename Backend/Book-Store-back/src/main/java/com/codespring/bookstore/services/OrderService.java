@@ -24,7 +24,6 @@ public class OrderService {
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
 
-    // Get all orders (admin)
     public List<OrderDto> getAllOrders() {
         return orderRepository.findAll()
                 .stream()
@@ -32,7 +31,6 @@ public class OrderService {
                 .toList();
     }
 
-    // Get orders by user
     @Transactional
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public List<OrderDto> getOrdersByUser(Integer userId) {
@@ -42,16 +40,13 @@ public class OrderService {
                 .toList();
     }
 
-    // Get order by id
     @Transactional
-//    @PreAuthorize("@securityChecks.isOwner(#userId)")
     public OrderDto getOrderById(Integer id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
         return orderMapper.toDto(order);
     }
 
-    // Place order from cart
     @Transactional
     @PreAuthorize("@securityChecks.isOwner(#userId)")
     public OrderDto placeOrder(Integer userId) {
@@ -59,32 +54,26 @@ public class OrderService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
 
-        // Get cart
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
 
-        // Check cart is not empty
         List<CartItem> cartItems = cartItemRepository.findByCartId(cart.getId());
         if (cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
-        // Create order
         Order order = new Order();
         order.setUser(user);
         order.setDate(LocalDate.now());
         order.setStatus("pending");
 
-        // Create order items from cart items
         BigDecimal total = BigDecimal.ZERO;
         for (CartItem cartItem : cartItems) {
-            // Check book availability
             Book book = cartItem.getBook();
             if (book.getQuantity() < cartItem.getQuantity()) {
                 throw new RuntimeException("Not enough stock for book: " + book.getTitle());
             }
 
-            // Create order item
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setBook(book);
@@ -93,11 +82,9 @@ public class OrderService {
             orderItem.setSubtotal(cartItem.getSubtotal());
             order.getOrderItems().add(orderItem);
 
-            // Update book quantity
             book.setQuantity(book.getQuantity() - cartItem.getQuantity());
             bookRepository.save(book);
 
-            // Add to total
             total = total.add(cartItem.getPrice()
                     .multiply(BigDecimal.valueOf(cartItem.getQuantity())));
         }
@@ -105,13 +92,11 @@ public class OrderService {
         order.setTotal(total);
         orderRepository.save(order);
 
-        // Clear cart after order
         cartItemRepository.deleteByCartId(cart.getId());
 
         return orderMapper.toDto(order);
     }
 
-    // Update order status (admin)
     @Transactional
     public OrderDto updateOrderStatus(Integer id, String status) {
         Order order = orderRepository.findById(id)

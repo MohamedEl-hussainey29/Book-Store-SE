@@ -9,12 +9,10 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {BookMapper.class})
 public interface CartItemMapper {
 
-    // CartItem entity → CartItemDto
     @Mapping(target = "bookId", source = "book.id")
     @Mapping(target = "subtotal", source = "subtotal")
     CartItemDto toDto(CartItem cartItem);
 
-    // CartItemDto → CartItem entity
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "cart", ignore = true)
     @Mapping(target = "book", ignore = true)

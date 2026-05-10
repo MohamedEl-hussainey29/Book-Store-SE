@@ -27,12 +27,10 @@ public class StatisticsService {
     public StatisticsDto getDashboardStats() {
         StatisticsDto stats = new StatisticsDto();
 
-        // 1. عد الكتب والأوردرات (ميثود جاهزة من JPA)
         stats.setTotalBooks(bookRepository.count());
         stats.setTotalOrders(orderRepository.count());
 
-        // 2. عد اليوزرز والأدمنز بناءً على الصلاحية بتاعتهم
-        // (عدل كلمة Role.USER و Role.ADMIN حسب ما إنت مسميهم عندك في الكود)
+
         stats.setTotalUsers(userRepository.countByRole("USER"));
         stats.setTotalAdmins(userRepository.countByRole("ADMIN"));
 

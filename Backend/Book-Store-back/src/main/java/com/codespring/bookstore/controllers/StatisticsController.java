@@ -20,7 +20,7 @@ public class StatisticsController {
     private StatisticsService statisticsService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')") // السطر ده مهم جداً علشان نمنع اليوزر العادي
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StatisticsDto> getStatistics() {
         return ResponseEntity.ok(statisticsService.getDashboardStats());
     }

@@ -10,12 +10,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-/**
- * Utility class responsible for:
- *  - Generating JWT tokens on login
- *  - Validating tokens on every request
- *  - Extracting claims (email, role) from tokens
- */
+
 @Component
 public class JwtUtil {
 
@@ -30,16 +25,11 @@ public class JwtUtil {
         this.expirationMs = expirationMs;
     }
 
-    // ── Generate ──────────────────────────────────────────────────────────────
 
-    /**
-     * Creates a signed JWT containing the user's email and role.
-     */
     public String generateToken(User user) {
         return Jwts.builder()
                 .subject(user.getEmail())
 
-                // هنا بنحط كل الداتا الإضافية (Claims)
                 .claim("firstName", user.getFirstName())
                 .claim("lastName", user.getLastName())
                 .claim("role", user.getRole())
@@ -52,7 +42,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // ── Extract ───────────────────────────────────────────────────────────────
 
     public String extractEmail(String token) {return parseClaims(token).getSubject();}
 
@@ -71,11 +60,7 @@ public class JwtUtil {
 
     public Date extractExpiration (String token) {return parseClaims(token).getExpiration();}
 
-    // ── Validate ──────────────────────────────────────────────────────────────
 
-    /**
-     * Returns true if the token is well-formed, correctly signed, and not expired.
-     */
     public boolean isTokenValid(String token) {
         try {
             parseClaims(token);
@@ -85,7 +70,6 @@ public class JwtUtil {
         }
     }
 
-    // ── Internal ──────────────────────────────────────────────────────────────
 
     private Claims parseClaims(String token) {
         return Jwts.parser()

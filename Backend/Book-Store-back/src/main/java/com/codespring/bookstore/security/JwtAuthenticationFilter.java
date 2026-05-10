@@ -15,13 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Runs once per HTTP request.
- *
- * If a valid, non-blacklisted JWT is present in the Authorization header
- * the filter sets the authenticated principal in the SecurityContext so
- * downstream security rules can use it (@PreAuthorize, etc.).
- */
+
 @Component
 @RequiredArgsConstructor
 @EnableMethodSecurity
@@ -50,7 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String image = jwtUtil.extractImage(token);
             Integer userId = jwtUtil.extractID(token);
 
-            // Spring Security expects roles prefixed with "ROLE_"
             var authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
             var auth = new UsernamePasswordAuthenticationToken(
                     email, null, List.of(authority));
@@ -61,12 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
 
-    /**
-     * Pulls the raw token string out of the "Authorization: Bearer <token>" header.
-     * Returns null when the header is absent or malformed.
-     */
     private String extractToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {

@@ -7,11 +7,9 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookMapper {
 
-    // Book entity → BookDto
-    @Mapping(target = "categoryName", source = "category.name")  // ✅
+    @Mapping(target = "categoryName", source = "category.name")
     BookDto toDto(Book book);
 
-    // BookDto → Book entity
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "cartItems", ignore = true)
@@ -20,7 +18,6 @@ public interface BookMapper {
     @Mapping(target = "status", ignore = true)
     Book toEntity(BookDto dto);
 
-    // Update existing book from dto
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)

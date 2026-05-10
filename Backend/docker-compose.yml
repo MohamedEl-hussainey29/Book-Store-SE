@@ -1,16 +1,9 @@
 version: "3.8"
 
-# ══════════════════════════════════════════════════════════
-# Four containers running together (Microservices Architecture):
-#   1. mysql-db          → MySQL 8 database for main app
-#   2. bookstore         → Spring Boot main application
-#   3. notification-db   → MySQL 8 database for notifications
-#   4. notification-app  → Spring Boot notification service
-# ══════════════════════════════════════════════════════════
+
 
 services:
 
-  # ── Container 1: MySQL Database (Main App) ───────────────────────────
   mysql-db:
     image: mysql:8.0
     container_name: bookstore-mysql
@@ -32,7 +25,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Container 2: Spring Boot Application (Main App) ──────────────────
   bookstore:
     build: ./Book-Store-back
     container_name: bookstore-app
@@ -45,24 +37,20 @@ services:
       - ./uploads:/app/uploads
 
     environment:
-      # ── Database ──────────────────────────────────────────
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/bookstore?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 18102005#Mm
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
-      # ── JWT ───────────────────────────────────────────────
       JWT_SECRET: your-very-secret-key-that-is-at-least-256-bits-long!
       JWT_EXPIRATION: 86400000
 
-      # ⚠️ مسحنا إعدادات الإيميل من هنا علشان اتنقلت للسيرفيس التانية
 
     depends_on:
       mysql-db:
         condition: service_healthy
 
 
-  # ── Container 3: MySQL Database (Notification Service) ────────────────
   notification-db:
     image: mysql:8.0
     container_name: notification-mysql
@@ -73,7 +61,6 @@ services:
       MYSQL_DATABASE: notification_db # اسم داتا بيز مختلف
 
     ports:
-      # غيرنا البورت اللي بره لـ 3307 علشان ميتخانقش مع الداتا بيز الأولى اللي واخدة 3306
       - "3307:3306"
 
     volumes:
@@ -85,7 +72,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Container 4: Spring Boot Application (Notification Service) ───────
   notification-app:
     build: ./notification-service # بيقرا من فولدر الإشعارات
     container_name: notification-app
@@ -95,13 +81,11 @@ services:
       - "8081:8081" # بورت السيرفيس التانية
 
     environment:
-      # ── Database ──────────────────────────────────────────
       SPRING_DATASOURCE_URL: jdbc:mysql://notification-db:3306/notification_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 18102005#Mm
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
-      # ✅ ── Email (اتنقلت هنا وبقت مسؤولية المايكروسيرفيس دي) ──
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_USERNAME: mohamedmostafa18102005@gmail.com
@@ -111,7 +95,6 @@ services:
       notification-db:
         condition: service_healthy
 
-# ── Named Volumes (persists MySQL data) ────────────────────
 volumes:
   mysql-data:
   notification-mysql-data: # ضفنا الفضاء بتاع الداتا بيز التانية

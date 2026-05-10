@@ -12,12 +12,11 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     @Autowired
-    private JavaMailSender mailSender; // دي الأداة الجاهزة من سبرينج لبعت الإيميلات
+    private JavaMailSender mailSender;
 
     @Autowired
-    private NotificationLogRepository logRepository; // علشان نسيف في الداتا بيز
+    private NotificationLogRepository logRepository;
 
-    // 1. فانكشن بعت الإيميل
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -26,7 +25,6 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    // 2. فانكشن حفظ السجل في الداتا بيز
     public void saveLog(NotificationRequest request) {
         NotificationLog log = new NotificationLog(
                 request.getToEmail(),

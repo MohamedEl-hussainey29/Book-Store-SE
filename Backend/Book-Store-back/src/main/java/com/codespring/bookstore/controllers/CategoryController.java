@@ -20,20 +20,17 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    // GET /api/categories
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
-    // GET /api/categories/1
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Integer id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-    // POST /api/categories
-    @PreAuthorize("hasRole('ADMIN')") // الحماية بتاعتك
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CategoryDto> createCategory(
             @ModelAttribute CategoryDto dto,
@@ -46,7 +43,6 @@ public class CategoryController {
 
    
 
-    // PUT /api/categories/1
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CategoryDto> updateCategory(
@@ -58,7 +54,6 @@ public class CategoryController {
         return ResponseEntity.ok(updatedCategory);
     }
 
-    // DELETE /api/categories/1
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Integer id) {

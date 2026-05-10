@@ -23,18 +23,15 @@ public class NotificationLog {
 
     private LocalDateTime sentAt;
 
-    // Constructors (فاضي وواحد بياخد الداتا)
     public NotificationLog() {}
 
     public NotificationLog(String recipientEmail, String subject, String messageBody) {
         this.recipientEmail = recipientEmail;
         this.subject = subject;
         this.messageBody = messageBody;
-        this.sentAt = LocalDateTime.now(); // بياخد وقت الإرسال أوتوماتيك
+        this.sentAt = LocalDateTime.now();
     }
 
-    // متنساش تعمل الـ Getters والـ Setters هنا
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    // ... باقي الـ Getters و الـ Setters
 }

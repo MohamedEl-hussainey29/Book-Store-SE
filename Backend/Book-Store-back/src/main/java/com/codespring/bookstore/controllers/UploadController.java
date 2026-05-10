@@ -19,10 +19,8 @@ public class UploadController {
     @PostMapping("/image")
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
 
-        // 1. نبعت الصورة للسيرفيس تحفظها وتجيب مسارها
         String imagePath = fileStorageService.storeFile(file);
 
-        // 2. نرجع المسار في شكل JSON علشان بتاع الفرونت يعرف يقرأه بسهولة
         Map<String, String> response = new HashMap<>();
         response.put("imageUrl", imagePath);
 
