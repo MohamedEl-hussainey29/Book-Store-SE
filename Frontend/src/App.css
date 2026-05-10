@@ -1,0 +1,52 @@
+
+/* COMMON STYLES */
+.mySwiper .swiper-button-next,
+.mySwiper .swiper-button-prev {
+  color: #ED553B !important;
+}
+
+.mySwiper .swiper-pagination-bullet{
+  margin-right: 15px !important;
+}
+.mySwiper .swiper-pagination-bullet-active {
+  background: #ED553B !important;
+  outline: 2px solid #ED553B;
+  outline-offset: 7px;
+  opacity: 1;
+}
+.mySwiper .swiper-pagination-bullet {
+  background: #ccc;
+  opacity: 1;
+}
+/* ///////////////////////////////////////// */
+/* HOME-SLIDER */
+.homeSlider{
+    background: linear-gradient(to right,#FFE5E5 , #F5FFFE , #FFFFFF);
+    width: 100%;
+    height: 400px;
+}
+
+/* //////////////////////////////////////// */
+/* NEW-RELEASE */
+
+.actionsBtn{
+  position: absolute;
+  bottom: 20%;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.4s ease;
+}
+
+.bookItem:hover .actionsBtn{
+  opacity: 1;
+  transform: translateY(0);
+}
+/* /////////////////////////////////// */
+/* Book */
+
+.bookBg{
+  background: linear-gradient(to right, #FBEEEE , #F7FFFE);
+  width: 100%;
+}
+
